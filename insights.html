@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aesthetic Lifestyle AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #007C91;
+      --secondary: #38B6FF;
+      --accent: #A3E635;
+      --alert: #FF5C5C;
+      --bg: #FAFAFA;
+      --text: #2C2C2C;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: slideIn 1s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      color: var(--secondary);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.8s ease-in-out;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .forecast-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    #forecast-text {
+      font-size: 1.1rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--secondary);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .streak-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #eee;
+      transition: color 0.3s;
+    }
+
+    .streak-item:hover {
+      color: var(--primary);
+    }
+
+    .streak-count {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    #goals ul {
+      padding-left: 1.25rem;
+    }
+
+    #goals li {
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    #goals li::before {
+      content: "🌱";
+      position: absolute;
+      left: 0;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+      color: var(--secondary);
+      font-size: 0.9rem;
+      animation: fadeIn 2s ease;
+    }
+
+    .tracker-item {
+      margin-bottom: 0.75rem;
+    }
+
+    .tracker-item span {
+      display: inline-block;
+      min-width: 100px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--secondary);
+      width: 70%;
+      transition: width 1s ease-in-out;
+    }
+
+    /* Fancy gradient wave animation at the top */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 300px;
+      width: 100%;
+      background: linear-gradient(120deg, var(--secondary), var(--primary));
+      clip-path: ellipse(100% 30% at 50% 0%);
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Your Oasis</h1>
+      <p>Curated insights for a balanced life.</p>
+    </header>
+
+    <section id="forecast" class="card">
+      <h2>Daily Health Forecast</h2>
+      <div class="forecast-content">
+        <p id="forecast-text">Generating your daily wellness insight...</p>
+        <div class="spinner"></div>
+      </div>
+    </section>
+
+    <main class="grid-container">
+      <section id="streaks" class="card">
+        <h2>Streaks</h2>
+        <div class="streak-item">
+          <span>💧 Water Intake</span>
+          <span class="streak-count">5 days</span>
+        </div>
+        <div class="streak-item">
+          <span>🧘‍♀️ Meditation</span>
+          <span class="streak-count">12 days</span>
+        </div>
+        <div class="streak-item">
+          <span>☀️ Morning Walk</span>
+          <span class="streak-count">3 days</span>
+        </div>
+      </section>
+
+      <section id="sleep-tracker" class="card">
+        <h2>Sleep Tracker</h2>
+        <div class="tracker-item">
+          <span>Last Night:</span> 7.5 hours
+        </div>
+        <div class="tracker-item">
+          <span>Goal:</span> 8 hours
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 94%; background-color: var(--secondary);"></div>
+        </div>
+      </section>
+
+      <section id="stress-tracking" class="card">
+        <h2>Stress Tracking</h2>
+        <div class="tracker-item">
+          <span>Current Level:</span> Moderate
+        </div>
+        <div class="tracker-item">
+          <span>Triggers:</span> Workload, Sleep
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 50%; background-color: var(--alert);"></div>
+        </div>
+      </section>
+
+      <section id="water-intake" class="card">
+        <h2>Water Intake</h2>
+        <div class="tracker-item">
+          <span>Today:</span> 6 cups
+        </div>
+        <div class="tracker-item">
+          <span>Goal:</span> 8 cups
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 75%; background-color: var(--accent);"></div>
+        </div>
+      </section>
+
+      <section id="goals" class="card">
+        <h2>Long Term Goals</h2>
+        <ul>
+          <li>Run a 5k race</li>
+          <li>Read 12 books this year</li>
+          <li>Master a new healthy recipe weekly</li>
+          <li>Improve sleep quality</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>Stay mindful, stay balanced.</p>
+    </footer>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
