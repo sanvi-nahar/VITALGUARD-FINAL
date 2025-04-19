@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitalGuard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Inline CSS for the page -->
+  <style>
+    :root {
+      --primary: #007C91;
+      --secondary: #38B6FF;
+      --accent: #A3E635;
+      --alert: #FF5C5C;
+      --bg: #FAFAFA;
+      --text: #2C2C2C;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      height: 50px;
+      width: 50px;
+    }
+
+    .logo span {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 3rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .auth-buttons {
+      margin-left: -40px;
+      margin-right: 30px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.login-btn,
+.signup-btn {
+  width: 70px; /* set fixed width */
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 700;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover,
+.signup-btn:hover {
+  background-color: var(--secondary);
+}
+
+    
+  /* hero section */
+  .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .row-reverse {
+      flex-direction: row;
+    }
+
+    .image-col {
+      flex: 1 1 100%;
+    }
+    .text-col{
+      color: var(--primary);
+flex:1 1 100%;
+margin-top: -100px;
+margin-left: 30px;
+    }
+    .image-col img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    p.lead {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+   
+
+    .btn-primary {
+      max-width: 200px;
+      padding: 0.75rem 1.5rem;
+      margin-left: rem;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+    .btn-outline {
+      max-width: 200px;
+      padding: 0.75rem 1.5rem;
+      margin-left: 0;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--secondary);
+    }
+
+  
+
+    @media (max-width: 1024px) {
+  .row {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .text-col {
+    margin-top: 0;
+    margin-left: 0;
+  }
+
+  .image-col img {
+    max-height: 400px;
+  }
+
+  .auth-buttons {
+    margin-left: 0;
+    margin-right: 0;
+    flex-direction: column;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-group {
+    justify-content: center;
+  }
+}
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: white;
+    padding: 1rem;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .navbar {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-col {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+
+    .how-it-works {
+  padding: 50px 20px;
+  background-color: #f8fafc;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.step {
+  flex-direction: column;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3b82f6;
+}
+
+.step img {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  background-color: var(--primary);
+  background-color: #007C91;
+}
+
+.footer-main {
+  background-color: var(--primary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  border-top: 1px solid #ccc;
+  padding: 40px 0;
+  margin-top: 40px;
+  color: var(--);
+}
+
+.footer-col {
+  flex: 1 1 200px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.footer-icon {
+  fill: currentColor;
+}
+
+.footer-text-muted {
+  color: var(--card-bg)
+}
+
+.footer-heading {
+  font-size: large;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.footer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-nav li {
+  margin-bottom: 8px;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: var(--card-bg);
+}
+
+.footer-link:hover {
+  color: #000;
+  text-decoration: underline;
+}
+.how-it-works {
+      padding: 50px 20px;
+      background-color: #f8fafc;
+      text-align: center;
+    }
+
+    .how-it-works h2 {
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .step {
+      flex-direction: row;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .step-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #3b82f6;
+    }
+
+    .step img {
+      width: 100%;
+      height: auto;
+      margin-top: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Placeholder target sections */
+    section.target {
+      height: 300px;
+      padding: 50px;
+      margin-top: 50px;
+      background-color: #e5e7eb;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="raw.webp" alt="VitalGuard Logo" />
+      <span>VitalGuard</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="lifestyleAI.html">Lifestyle AI</a></li>
+      <li><a href="risks.html">HealthRisks</a></li>
+      <li><a href="insights.html">Insights</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="signup.html" class="signup-btn">Sign Up</a>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    <div class="row row-reverse">
+      <div class="image-col">
+        <img src="herovitalguardphoto.png" alt="Bootstrap Themes" loading="lazy">
+      </div>
+      <div class="text-col">
+        <h1>🛡️<br>VitalGuard:<br>Your Smart Shield For Healthier Tommorrow.</h1>
+        
+        <p class="lead" style="color: #2C2C2C ;">
+          VitalGuard combines cutting-edge AI technology with real-time monitoring to keep you safe, informed, and ready for anything. Your health, our priority."</p>
+        <div class="btn-group">
+          <a href="./personalize.html">
+            <button class="btn btn-primary">Personalize For You</button>
+          </a>
+        <a href=" https://www.chatbase.co/chatbot-iframe/ejzroKWykxhiAWKl17BPa"><button class="btn btn-outline ">Chat With VitaAI </button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Popping Chatbase Chatbot</title>
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+  
+      /* Floating button */
+      #chat-toggle {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #007C91;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        cursor: pointer;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transition: transform 0.3s ease;
+      }
+  
+      #chat-toggle:hover {
+        transform: scale(1.1);
+      }
+  
+      /* Chat window popup */
+      #chatbot {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 400px;
+        height: 400px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 999;
+        animation: popIn 0.4s ease;
+      }
+  
+      @keyframes popIn {
+        0% { transform: scale(0.7); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+  
+      /* Chatbot iframe */
+      #chatbot iframe {
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+      .chatbot-header {
+  background-color: #007C91;
+  color: white;
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+    </style>
+  </head>
+  <body>
+  
+    <!-- Floating button -->
+    <button id="chat-toggle">💬</button>
+  
+    <!-- Chatbot popup with iframe -->
+    <div id="chatbot">
+      <div class="chatbot-header">VitalBot</div>
+      <iframe 
+        src="https://www.chatbase.co/chatbot-iframe/iCExrdlI_jqIwXSOUYGEi" 
+        allow="microphone;"
+      ></iframe>
+    </div>
+  
+    <script>
+      const chatToggle = document.getElementById('chat-toggle');
+      const chatbot = document.getElementById('chatbot');
+  
+      chatToggle.addEventListener('click', () => {
+        chatbot.style.display = chatbot.style.display === 'flex' ? 'none' : 'flex';
+      });
+    </script>
+  
+  </body>
+  </html>
+
+
+   <section id="howItWorks" class="how-it-works">
+    <h2>Protect Your Health in 3 Smart Steps</h2>
+    <div class="steps">
+      <div class="step">
+        <p class="step-number">1</p>
+        <h3>Monitor Your Vitals</h3>
+        <p>Track heart rate, oxygen, temperature & more with real-time AI monitoring from multiple sources.</p>
+        <img src="./monitorvitals.png" alt="Vital monitoring interface" id="vitalsImg">
+      </div>
+      <div class="step">
+        <p class="step-number">2</p>
+        <h3>Detect Anomalies Early</h3>
+        <p>Our multimodal AI analyzes movement, voice, and medical history to detect early signs of health risks.</p>
+        <img src="./anomaly.png" alt="AI detecting anomaly alert" id="anomaliesImg">
+      </div>
+      <div class="step">
+        <p class="step-number">3</p>
+        <h3>Get Help Instantly</h3>
+        <p>Smart alerts are sent with multichannel confirmation. Get first-aid instructions or auto-alert emergency contacts.</p>
+        <img src="image.png" alt="Emergency notification" id="helpImg">
+      </div>
+    </div>
+  </section>
+
+  
+
+  
+  
+  <div class="footer-container">
+    <footer class="footer-main">
+      <div class="footer-col">
+        <a href="/" class="footer-logo" aria-label="Footer Logo">
+          <svg class="footer-icon" width="40" height="32" aria-hidden="true">
+            <use xlink:href="#bootstrap"></use>
+          </svg>
+        </a>
+      </div>
+  
+      <div class="footer-col"></div>
+  
+      <div class="footer-col">
+        <h5 class="footer-heading">Footer Section</h5>
+        <ul class="footer-nav">
+          <li><a href="index.html" class="footer-link">Home</a></li>
+          <li><a href="dashboard.html" class="footer-link">Dashboard</a></li>
+          <li><a href="lifestyleAI.html" class="footer-link">Lifestyle AI</a></li>
+          <li><a href="risks.html" class="footer-link">Health Risks</a></li>
+          <li><a href="settings.html" class="footer-link">Settings</a></li>
+        </ul>
+      </div>
+  
+     
+      
+    </footer>
+  </div>
+  
+  
+
+  
+  <script>
+    // Add simple fade-in animation on scroll
+    const steps = document.querySelectorAll('.step');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.2 });
+  
+    steps.forEach(step => {
+      step.style.opacity = 0;
+      step.style.transform = 'translateY(30px)';
+      step.style.transition = 'all 0.6s ease';
+      observer.observe(step);
+    });
+   
+  </script>
+  
+  
+
+</body>
+</html>
