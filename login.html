@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - VitalGuard</title>
+
+  <!-- Inline CSS -->
+  <style>
+     :root {
+            --primary: #007C91;
+      --secondary: #38B6FF;
+      --accent: #A3E635;
+      --alert: #FF5C5C;
+      --bg: #FAFAFA;
+      --text: #2C2C2C;
+      --card-bg: #ffffff;
+     }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .auth-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .auth-container h2 {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    form input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    form button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    form button:hover {
+      background-color: var(--primary);
+    }
+
+    form p {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    form a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+
+  <script src="{% static 'vitalguard/static/js/scripts.js' %}" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2 class="auth-header">Login to VitalGuard</h2>
+      <form class="auth-form">
+        <input type="email" placeholder="Email" class="input-field" required />
+        <input type="password" placeholder="Password" class="input-field" required />
+        <button type="submit" class="auth-btn">Login</button>
+        <p class="signup-link">Don't have an account? <a href="signup.html" class="signup-text">Signup</a></p>
+        <p class="signup-link">Personalize For You<a class="signup-text" href="personalize.html"> Click here.</a></p>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
