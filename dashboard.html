@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalGuard AI Health Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007C91;
+      --secondary: #38B6FF;
+      --accent: #A3E635;
+      --alert: #FF5C5C;
+      --bg: #FAFAFA;
+      --text: #2C2C2C;
+      --card-bg: #ffffff;
+    --text-light: #555;
+    --text-accent: #4A90E2;
+    --border-color: #e0e6ed;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.1);
+    --gradient-start: #50E3C2;
+    --gradient-end: #4A90E2;
+
+    /* New Widget Colors */
+    --vitals-color: #007C91; /* Pink/Red */
+    --activity-color: #007C91; /* Orange */
+    --lifestyle-color: #007C91; /* Green */
+    --insights-color: #007C91; /* Blue */
+    --history-color:#007C91; /* Deep Purple */
+    --checkups-color: ##007C91; /* Cyan */
+
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Loading Overlay Styles */
+#loading-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(245, 247, 250, 0.85); /* Semi-transparent background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease-out;
+}
+
+#loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* Allow clicks through when hidden */
+}
+
+.loader {
+    border: 5px solid var(--border-color); /* Light grey border */
+    border-top: 5px solid var(primary); /* Blue spinner part */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+#loading-overlay p {
+    font-weight: 600;
+    color: var(--text);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "main   main"
+        "footer footer";
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    gap: 25px; /* Increased gap */
+    padding: 25px; /* Increased padding */
+    box-sizing: border-box;
+}
+
+.dashboard-header {
+    grid-area: header;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    padding: 20px 40px; /* Increased padding */
+    border-radius: 12px; /* Smoother radius */
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); /* Softer shadow */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 5px 0;
+    font-weight: 700;
+    font-size: 2.2em; /* Larger title */
+}
+
+.dashboard-header .subtitle {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1em;
+    opacity: 0.9;
+}
+
+.dashboard-main {
+    grid-area: main;
+    display: grid;
+    /* Adjust grid columns for 6 items */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Default: 3 columns on large screens */
+    gap: 25px; /* Increased gap */
+}
+
+.widget {
+    background-color: var(--widget-bg);
+    padding: 25px; /* Increased padding */
+    border-radius: 12px; /* Smoother radius */
+    box-shadow: 0 3px 6px var(--shadow-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 5px solid transparent; /* Add space for colored border */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* For icon positioning */
+    overflow: hidden; /* Hide overflow */
+}
+
+.widget:hover {
+    transform: translateY(-6px) scale(1.02); /* More pronounced hover */
+    box-shadow: 0 6px 12px var(--shadow-medium);
+}
+
+/* Assigning border colors to new widgets */
+.widget-vitals { border-left-color: var(--vitals-color); }
+.widget-activity { border-left-color: var(--activity-color); }
+.widget-lifestyle { border-left-color: var(--lifestyle-color); }
+.widget-insights { border-left-color: var(--insights-color); }
+.widget-history { border-left-color: var(--history-color); }
+.widget-checkups { border-left-color: var(--checkups-color); }
+
+.widget-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8em; /* Larger icons */
+    opacity: 0.15; /* Subtle icon */
+    color: var(--text-accent); /* Use text accent color */
+}
+.widget-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Specific Icon Colors - Match border */
+.widget-vitals .widget-icon { color: var(--vitals-color); }
+.widget-activity .widget-icon { color: var(--activity-color); }
+.widget-lifestyle .widget-icon { color: var(--lifestyle-color); }
+.widget-insights .widget-icon { color: var(--insights-color); }
+.widget-history .widget-icon { color: var(--history-color); }
+.widget-checkups .widget-icon { color: var(--checkups-color); }
+
+.widget h2 {
+    margin-top: 0;
+    margin-bottom: 15px; /* More space */
+    color: var(--text-dark); /* Use dark text color */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    font-size: 1.3em; /* Slightly larger */
+    font-weight: 600;
+}
+
+/* Styling for lists within widgets */
+.widget h2{
+    color: var(--text);
+}
+.widget-checkups{
+    color: #007C91;
+}
+.widget-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0; /* Add some bottom margin */
+    font-size: 0.95em;
+    color: var(--text-light);
+}
+.widget-list li {
+    margin-bottom: 8px; /* Space between list items */
+    line-height: 1.5;
+}
+.widget-list li .data {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-left: 5px;
+}
+.widget-list li .data-text {
+    font-style: italic;
+}
+
+.widget-list.simple-list li {
+    margin-bottom: 5px;
+}
+
+.widget p {
+    font-size: 0.95em; /* Slightly larger */
+    line-height: 1.5;
+    color: var(--text-light); /* Use light text color */
+    margin-bottom: 5px; /* Adjust spacing */
+    margin-top: 0;
+}
+
+.widget .widget-data {
+    font-size: 1.6em; /* Slightly adjusted data display */
+    font-weight: 700;
+    color: var(--text-dark); /* Darker color for data */
+    margin-bottom: 2px; /* Reduced margin */
+    line-height: 1.2;
+}
+.widget .widget-data .unit {
+    font-size: 0.5em; /* Smaller unit text */
+    font-weight: 400;
+    color: var(--text-light);
+    margin-left: 5px;
+}
+.widget .widget-subtext {
+    font-size: 0.85em;
+    color: #888; /* Grey subtext */
+    margin-top: 0;
+    margin-bottom: 10px; /* Ensure space below subtext */
+}
+
+/* Button and Link Styles */
+.widget-button, .widget-link {
+    display: inline-block;
+    margin-top: auto; /* Push to bottom */
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.widget-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 0.9em;
+}
+.widget-button:hover {
+    background-color: darken(var(--primary-color), 10%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.widget-link {
+    color: var(--primary-color);
+    font-size: 0.9em;
+    background-color: transparent;
+}
+.widget-link:hover {
+    text-decoration: underline;
+    color: darken(var(--primary-color), 15%);
+}
+
+/* Specific widget adjustments */
+.widget-lifestyle {
+    background: linear-gradient(135deg, var(--lifestyle-color) 0%, lighten(var(--lifestyle-color), 15%) 100%);
+    color: white;
+}
+.widget-lifestyle h2, .widget-lifestyle .widget-subtext, .widget-lifestyle .widget-icon {
+    color: (--primary-color);
+    opacity: 1;
+}
+.widget-lifestyle h2 {
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+.widget-lifestyle {
+    background-color: white;
+    color: var(--lifestyle-color);
+}
+
+.widget-button{
+    background-color: var(white);
+    border-color: var(--primary);
+    color: var(--text);
+}
+.widget-lifestyle .widget-button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dashboard-footer {
+    grid-area: footer;
+    text-align: center;
+    padding: 15px; /* Increased padding */
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 10px; /* Add some space above footer */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .dashboard-main {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Allow smaller items */
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-main {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-main {
+        grid-template-columns: 1fr; /* Stack widgets */
+    }
+    .dashboard-container {
+        padding: 15px;
+        gap: 15px;
+    }
+    .widget {
+        padding: 20px;
+    }
+    .dashboard-header {
+        padding: 15px 20px;
+    }
+    .dashboard-header h1 {
+        font-size: 1.8em;
+    }
+    .widget .widget-data {
+        font-size: 1.5em; /* Adjusted size for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 15px; /* Slightly smaller base font on mobile */
+    }
+    .dashboard-header h1 {
+        font-size: 1.6em;
+    }
+    .dashboard-header .subtitle {
+        font-size: 0.9em;
+    }
+    .widget h2 {
+        font-size: 1.1em;
+    }
+    .widget .widget-data {
+        font-size: 1.4em; /* Further adjusted size */
+    }
+    .widget-list {
+        font-size: 0.9em;
+    }
+}
+    </style>
+</head>
+<body>
+   
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+             <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#50E3C2;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#4A90E2;stop-opacity:1" />
+                    </linearGradient>
+                     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                 <path fill="url(#logoGradient)" filter="url(#glow)" d="M50,5 C74.85,5 95,25.15 95,50 C95,74.85 74.85,95 50,95 C25.15,95 5,74.85 5,50 C5,25.15 25.15,5 50,5 Z M50,15 C30.67,15 15,30.67 15,50 C15,69.33 30.67,85 50,85 C69.33,85 85,69.33 85,50 C85,30.67 69.33,15 50,15 Z M50,25 C63.81,25 75,36.19 75,50 C75,63.81 63.81,75 50,75 C36.19,75 25,63.81 25,50 C25,36.19 36.19,25 50,25 Z M50,40 L50,60 M40,50 L60,50"/>
+                 <path stroke="#FFFFFF" stroke-width="2" fill="none" d="M50,40 L50,60 M40,50 L60,50"/>
+            </svg>
+            <h1>D A S H B O A R D</h1>
+            <p class="subtitle">Your Personal Health Companion</p>
+        </header>
+        <main class="dashboard-main">
+            <!-- Widget 1: Vitals -->
+    
+            <div class="widget widget-vitals">
+                <div class="widget-icon">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <h2>Vitals</h2>
+                <ul class="widget-list">
+                    <li>❤️ Heart Rate: <span class="data" id="heart-rate">--</span> bpm</li>
+                    <li>💨 Respiration: <span class="data" id="respiration">--</span> breaths/min</li>
+                    <li>🩸 Blood Pressure: <span class="data" id="blood-pressure">--/--</span> mmHg</li>
+                    <li>🌡️ Body Temp: <span class="data" id="body-temp">--</span>°F</li>
+                    <li>🧠 Stress Level: <span class="data data-text" id="stress-level">--</span></li>
+                </ul>
+            </div>
+            
+            <!-- Widget 2: Activity -->
+            
+            <div class="widget widget-activity">
+                 <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6.5 7V23h-2V12.5c0-.28-.22-.5-.5-.5h-1c-.28 0-.5.22-.5.5V23h-2V11.5c0-.28-.22-.5-.5-.5H16v12h-2V10.65c.8-.53 1.45-1.37 1.78-2.37l.13-.39c.1-.31.04-.66-.17-.91s-.52-.4-.84-.4H9.5c-1.38 0-2.5 1.12-2.5 2.5V23H5V12.5c0-.28-.22-.5-.5-.5h-1c-.28 0-.5.22-.5.5V23H1V11.5C1 9.01 2.99 7 5.5 7H7v1.5H5.5C4.12 8.5 3 9.62 3 11v.5h1.5v12h2V11c0-.83.67-1.5 1.5-1.5h3.15c.35 0 .68.11.96.32.48.35.79.91.79 1.49V23h2v-9.5c0-.28-.22-.5-.5-.5h-1c-.28 0-.5.22-.5.5V23h2v-6.5c0-1.38 1.12-2.5 2.5-2.5h.5c1.38 0 2.5 1.12 2.5 2.5z"/></svg>
+                 </div>
+                <h2>Activity</h2>
+                 <ul class="widget-list">
+                    <li>👟 Steps: <span class="data" id="steps">--</span></li>
+                    <li>🛌 Sleep: <span class="data" id="sleep">--</span> hrs</li>
+                    <li>🔥 Calories Burned: <span class="data" id="calories">--</span> kcal</li>
+                </ul>
+                 <p class="widget-subtext">Today's Summary</p>
+            </div>
+            
+             <!-- Widget 3: Lifestyle Plan -->
+            
+           
+             <!-- Widget 4: Insights -->
+            
+            <div class="widget widget-insights">
+                 <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-.5-12h1v2h-1v-2zm0 4h1v6h-1v-6z"/></svg>
+                 </div>
+                <h2>Insights</h2>
+                <p class="widget-subtext" id="insight-text">AI-powered suggestions based on your health data.</p>
+                <a href="#" class="widget-link">View Details</a>
+            </div>
+             
+            <!-- Widget 5: Medical History -->
+         
+            <div class="widget widget-history">
+                 <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13 14h-2v-2h2v2zm2-8H9v2h6V6zm4-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 16H5V4h14v14zM11 18h2v-4h-2v4z"/></svg>
+                 </div>
+                <h2>Medical History</h2>
+                <p class="widget-subtext">Access past records, allergies, and conditions.</p>
+                 <ul class="widget-list simple-list">
+                     <li>Last Checkup: <span id="last-checkup">--</span></li>
+                     <li>Allergies: <span id="allergies">--</span></li>
+                 </ul>
+                 <a href="#" class="widget-link">View Full History</a>
+            </div>
+            
+            <!-- Widget 6: Upcoming Checkups -->
+            
+            <div class="widget widget-checkups">
+                 <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                 </div>
+                <h2>Upcoming Checkups</h2>
+                <p class="widget-data" id="upcoming-doctor">--</p>
+                <p class="widget-subtext" id="upcoming-date">--</p>
+                <a href="#" class="widget-link " style="color: black;">Manage Appointments</a>
+            </div>
+        </main>
+        <footer class="dashboard-footer">
+            <p>&copy; 2024 VitalGuard AI. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
